@@ -260,6 +260,23 @@ describe("sortImports", () => {
     expect(sortImports(input)).toBe(expected);
   });
 
+  it("keeps a single named specifier on one line even past printWidth", () => {
+    const input = [
+      `import { VkApiClient } from "@/clients/vk";`,
+      `import { ChannelSubscribeRewardService } from "@/services/channelSubscribeReward";`,
+      `import { SunoClient } from "@/clients/suno";`,
+      "",
+    ].join("\n");
+
+    const output = sortImports(input);
+    const lines = output.split("\n").filter(Boolean);
+
+    expect(lines).not.toContain("import {");
+    expect(lines[lines.length - 1]).toBe(
+      `import { ChannelSubscribeRewardService } from "@/services/channelSubscribeReward";`,
+    );
+  });
+
   it("reproduces the user's full example", () => {
     const input = [
       `import { StreamingBlobPayloadInputTypes, StreamingBlobPayloadOutputTypes } from "@smithy/types";`,

@@ -32,7 +32,7 @@ export function renderImport(
 
   const singleLine = `import ${typePrefix}${clauseParts.join(", ")} from ${q}${imp.module}${q};`;
 
-  if (singleLine.length <= opts.printWidth || namedStrings.length === 0) {
+  if (singleLine.length <= opts.printWidth || namedStrings.length <= 1) {
     return singleLine;
   }
 

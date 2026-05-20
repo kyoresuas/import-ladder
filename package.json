@@ -1,0 +1,75 @@
+{
+  "name": "import-ladder",
+  "displayName": "Sort Imports Ladder",
+  "description": "Sort TypeScript/JavaScript imports in ascending length order",
+  "version": "0.3.0",
+  "publisher": "kyoresuas",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Formatters"
+  ],
+  "activationEvents": [
+    "onLanguage:typescript",
+    "onLanguage:javascript",
+    "onLanguage:typescriptreact",
+    "onLanguage:javascriptreact"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "sortImport.sort",
+        "title": "Sort Imports Ladder"
+      }
+    ],
+    "configuration": {
+      "title": "Sort Imports Ladder",
+      "properties": {
+        "sortImport.formatOnSave": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically sort imports when saving a file."
+        },
+        "sortImport.printWidth": {
+          "type": "number",
+          "default": 80,
+          "description": "Max line width before an import is broken into multiple lines."
+        },
+        "sortImport.indentSize": {
+          "type": "number",
+          "default": 2,
+          "description": "Indent size (in spaces) for multi-line imports."
+        },
+        "sortImport.useTabs": {
+          "type": "boolean",
+          "default": false,
+          "description": "Use tab characters for indentation in multi-line imports."
+        },
+        "sortImport.quote": {
+          "type": "string",
+          "enum": [
+            "\"",
+            "'"
+          ],
+          "default": "\"",
+          "description": "Quote style for module strings."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p .",
+    "watch": "tsc -p . -w",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "vscode:prepublish": "npm run compile"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  }
+}

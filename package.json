@@ -2,7 +2,7 @@
   "name": "import-ladder",
   "displayName": "Sort Imports Ladder",
   "description": "Sort TypeScript/JavaScript imports in ascending length order",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "publisher": "kyoresuas",
   "engines": {
     "vscode": "^1.85.0"

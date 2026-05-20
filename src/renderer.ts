@@ -1,11 +1,12 @@
 import type { ParsedImport, NamedSpecifier, ResolvedOptions } from "./types";
 
 /**
- * Render a single-line import
+ * Render import
  */
-export function renderImportSingleLine(
+export function renderImport(
   imp: ParsedImport,
   opts: ResolvedOptions,
+  eol: string,
 ): string {
   const q = opts.quote;
 
@@ -29,44 +30,11 @@ export function renderImportSingleLine(
     clauseParts.push("{}");
   }
 
-  return `import ${typePrefix}${clauseParts.join(", ")} from ${q}${imp.module}${q};`;
-}
+  const singleLine = `import ${typePrefix}${clauseParts.join(", ")} from ${q}${imp.module}${q};`;
 
-/**
- * Get the sort key for an import
- */
-export function importSortKey(
-  imp: ParsedImport,
-  opts: ResolvedOptions,
-): number {
-  return renderImportSingleLine(imp, opts).length;
-}
-
-/**
- * Render import
- */
-export function renderImport(
-  imp: ParsedImport,
-  opts: ResolvedOptions,
-  eol: string,
-): string {
-  const singleLine = renderImportSingleLine(imp, opts);
-  const namedCount = imp.namedImports.length;
-
-  if (singleLine.length <= opts.printWidth || namedCount === 0) {
+  if (singleLine.length <= opts.printWidth || namedStrings.length === 0) {
     return singleLine;
   }
-
-  const q = opts.quote;
-  const typePrefix = imp.isTypeOnly ? "type " : "";
-  const sortedNamed = sortNamedSpecifiers(imp.namedImports);
-  const namedStrings = sortedNamed.map((n) =>
-    n.isType ? `type ${n.name}` : n.name,
-  );
-
-  const clauseParts: string[] = [];
-  if (imp.defaultImport) clauseParts.push(imp.defaultImport);
-  if (imp.namespaceImport) clauseParts.push(imp.namespaceImport);
 
   const multilineNamed =
     "{" +

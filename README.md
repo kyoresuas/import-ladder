@@ -32,12 +32,10 @@ import { ServiceException } from "@smithy/smithy-client";
 
 ## Sorting rule
 
-One simple rule: **sort by how long the import would be on a single line, ascending**.
+One simple rule, the same for single-line and multi-line imports: **sort by the length of the `from "module"` line, ascending.**
 
-- single-line imports use their full line length
-- multi-line imports use the same metric - the length of the equivalent one-liner, not just the closing `} from "module";` line
-
-This keeps imports with a long specifier name in the right place even when `printWidth` forces them onto multiple lines.
+- single-line -> length of the whole line
+- multi-line -> length of the closing `} from "module";` line
 
 Inside `{ ... }` the named specifiers are sorted the same way (by name length, alphabetical as a tie-break).
 

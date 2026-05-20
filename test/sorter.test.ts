@@ -73,7 +73,7 @@ describe("sortImports", () => {
     expect(sortImports(input)).toBe(expected);
   });
 
-  it("sorts mixed multi-line and single-line by single-line length", () => {
+  it("sorts mixed multi-line and single-line by from-line length", () => {
     const input = [
       `import { tiny } from "a";`,
       `import { S3Client, _Object, ObjectCannedACL, __MetadataBearer, GetObjectCommand, HeadObjectCommand, ListObjectsCommand, DeleteObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";`,
@@ -84,10 +84,11 @@ describe("sortImports", () => {
     const output = sortImports(input);
     const lines = output.split("\n");
 
+    // tiny: 25, aws-sdk multi from-line: 28, medium: 28
+    // stable: tiny, aws-sdk, medium
     expect(lines[0]).toBe(`import { tiny } from "a";`);
-    expect(lines[1]).toBe(`import { medium } from "bb";`);
-    expect(lines[2]).toBe("import {");
-    expect(lines[lines.length - 2]).toBe(`} from "@aws-sdk/client-s3";`);
+    expect(lines[1]).toBe("import {");
+    expect(lines[lines.length - 2]).toBe(`import { medium } from "bb";`);
   });
 
   it("puts a short single-line import before a multi-line one with a longer from-line", () => {
@@ -104,7 +105,7 @@ describe("sortImports", () => {
     expect(firstLine).toBe(`import { toast } from "sonner";`);
   });
 
-  it("sorts multi-line imports by single-line length ascending", () => {
+  it("sorts multi-line imports by from-line ascending", () => {
     const input = [
       `import { Select, SelectItem, SelectValue, SelectContent, SelectTrigger } from "@/components/ui/select";`,
       `import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/ui/table";`,
@@ -116,13 +117,13 @@ describe("sortImports", () => {
     const fromLines = output.split("\n").filter((l) => l.startsWith("} from"));
 
     expect(fromLines).toEqual([
+      `} from "@/utils/actionLog";`,
       `} from "@/components/ui/table";`,
       `} from "@/components/ui/select";`,
-      `} from "@/utils/actionLog";`,
     ]);
   });
 
-  it("handles default + named imports", () => {
+  it("handles default + named imports (sharp example)", () => {
     const input = `import sharp, { FormatEnum, FitEnum } from "sharp";\n`;
     const expected = `import sharp, { FitEnum, FormatEnum } from "sharp";\n`;
     expect(sortImports(input)).toBe(expected);
@@ -259,27 +260,6 @@ describe("sortImports", () => {
     expect(sortImports(input)).toBe(expected);
   });
 
-  it("does not pull a wrapped long-name import into the short-import band", () => {
-    const input = [
-      `import { MaxService } from "@/services/max";`,
-      `import { ChannelSubscribeRewardService } from "@/services/channelSubscribeReward";`,
-      `import { SunoClient } from "@/clients/suno";`,
-      `import { VkApiClient } from "@/clients/vk";`,
-      "",
-    ].join("\n");
-
-    const output = sortImports(input);
-    const lines = output.split("\n");
-    const channelIdx = lines.findIndex((l) =>
-      l.includes("ChannelSubscribeReward"),
-    );
-    const maxIdx = lines.findIndex((l) => l.includes("MaxService"));
-    const sunoIdx = lines.findIndex((l) => l.includes("SunoClient"));
-
-    expect(channelIdx).toBeGreaterThan(maxIdx);
-    expect(channelIdx).toBeGreaterThan(sunoIdx);
-  });
-
   it("reproduces the user's full example", () => {
     const input = [
       `import { StreamingBlobPayloadInputTypes, StreamingBlobPayloadOutputTypes } from "@smithy/types";`,
@@ -297,15 +277,6 @@ describe("sortImports", () => {
     ].join("\n");
 
     const expected = [
-      `import { Readable } from "stream";`,
-      `import { randomUUID } from "crypto";`,
-      `import { S3Bucket } from "@/types/s3";`,
-      `import { ReadableStream } from "stream/web";`,
-      `import appConfig from "@/constants/appConfig";`,
-      `import { Upload } from "@aws-sdk/lib-storage";`,
-      `import { appLogger } from "@/config/winstonLogger";`,
-      `import sharp, { FitEnum, FormatEnum } from "sharp";`,
-      `import { ServiceException } from "@smithy/smithy-client";`,
       "import {",
       "  StreamingBlobPayloadInputTypes,",
       "  StreamingBlobPayloadOutputTypes,",
@@ -321,6 +292,15 @@ describe("sortImports", () => {
       "  DeleteObjectCommand,",
       "  ListObjectsV2Command,",
       `} from "@aws-sdk/client-s3";`,
+      `import { Readable } from "stream";`,
+      `import { randomUUID } from "crypto";`,
+      `import { S3Bucket } from "@/types/s3";`,
+      `import { ReadableStream } from "stream/web";`,
+      `import appConfig from "@/constants/appConfig";`,
+      `import { Upload } from "@aws-sdk/lib-storage";`,
+      `import { appLogger } from "@/config/winstonLogger";`,
+      `import sharp, { FitEnum, FormatEnum } from "sharp";`,
+      `import { ServiceException } from "@smithy/smithy-client";`,
       "",
     ].join("\n");
 

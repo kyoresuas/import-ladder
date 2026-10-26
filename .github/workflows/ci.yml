@@ -23,3 +23,8 @@ jobs:
 
       - name: Tests
         run: npm test
+
+      - name: Package
+        run: |
+          npm run compile
+          npx --yes @vscode/vsce package --no-dependencies

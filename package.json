@@ -1,14 +1,44 @@
 {
   "name": "import-ladder",
   "displayName": "Sort Imports Ladder",
-  "description": "Sort TypeScript/JavaScript imports in ascending length order",
+  "description": "Sort TypeScript and JavaScript imports as a ladder: shortest line first, longest last. Works before or after Prettier, in VS Code and Cursor.",
   "version": "0.3.3",
   "publisher": "kyoresuas",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kyoresuas/import-ladder.git"
+  },
+  "homepage": "https://github.com/kyoresuas/import-ladder#readme",
+  "bugs": {
+    "url": "https://github.com/kyoresuas/import-ladder/issues"
+  },
+  "icon": "images/icon.png",
+  "galleryBanner": {
+    "color": "#1b1d27",
+    "theme": "dark"
+  },
+  "keywords": [
+    "sort imports",
+    "import sorter",
+    "import ladder",
+    "imports ladder",
+    "staircase imports",
+    "organize imports",
+    "sort by length",
+    "typescript",
+    "javascript",
+    "react",
+    "prettier",
+    "cursor",
+    "лесенка импортов"
+  ],
   "engines": {
     "vscode": "^1.85.0"
   },
   "categories": [
-    "Formatters"
+    "Formatters",
+    "Other"
   ],
   "activationEvents": [
     "onLanguage:typescript",

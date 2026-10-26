@@ -1,6 +1,13 @@
 # Import Ladder
 
+[![CI](https://github.com/kyoresuas/import-ladder/actions/workflows/ci.yml/badge.svg)](https://github.com/kyoresuas/import-ladder/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/kyoresuas/import-ladder)](https://github.com/kyoresuas/import-ladder/releases/latest)
+[![VS Code](https://img.shields.io/badge/VS%20Code-%5E1.85-007ACC?logo=visualstudiocode&logoColor=white)](https://code.visualstudio.com/)
+[![License](https://img.shields.io/badge/License-MIT-2ea44f.svg)](LICENSE)
+
 > Sort TypeScript/JavaScript imports as a ladder - ascending by length. Extension for VS Code and Cursor.
+
+![Import Ladder sorting imports from shortest to longest](docs/demo.gif)
 
 ```ts
 // before
@@ -45,7 +52,7 @@ This produces a consistent staircase effect regardless of whether you have a tin
 
 ### From .vsix
 
-1. Download `sort-imports-ladder-x.y.z.vsix` from releases, or build it locally: `npm install && npm run compile && npx vsce package`.
+1. Download `import-ladder-x.y.z.vsix` from the [latest release](https://github.com/kyoresuas/import-ladder/releases/latest), or build it locally: `npm install && npm run compile && npx @vscode/vsce package`.
 2. In Cursor/VS Code: `Cmd+Shift+X` -> **…** menu -> **Install from VSIX…** -> pick the file.
 3. `Cmd+Shift+P` -> `Developer: Reload Window`.
 
@@ -63,7 +70,7 @@ Open the folder in VS Code, hit **F5** to launch an Extension Development Host.
 
 ### Command
 
-`Cmd+Shift+P` -> **Sort Imports (Ladder)** — sorts imports in the active file.
+`Cmd+Shift+P` -> **Sort Imports Ladder** — sorts imports in the active file.
 
 ### On save, before Prettier
 
@@ -105,6 +112,44 @@ Useful when Prettier rewrites line breaks inside imports and you want the final 
 
 The extension can run either before or after Prettier (see above). Keep `sortImport.printWidth` in sync with `printWidth` in your `.prettierrc` — otherwise Prettier and the extension may disagree on whether a given import should be single-line or multi-line.
 
+## ESLint
+
+The same order can be enforced in CI and in editors without the extension, with [eslint-plugin-perfectionist](https://github.com/azat-io/eslint-plugin-perfectionist). Its `line-length` sort measures a whole import, and `maxLineLength` makes imports that Prettier wraps sort by their closing `} from "module";` line, which is exactly the ladder rule.
+
+```js
+// eslint.config.js
+import perfectionist from "eslint-plugin-perfectionist";
+
+export default [
+  {
+    plugins: { perfectionist },
+    rules: {
+      "perfectionist/sort-imports": [
+        "error",
+        {
+          type: "line-length",
+          order: "asc",
+          maxLineLength: 80, // same value as printWidth in .prettierrc
+          sortSideEffects: true,
+          groups: [],
+          newlinesBetween: "ignore",
+        },
+      ],
+      "perfectionist/sort-named-imports": [
+        "error",
+        {
+          type: "line-length",
+          order: "asc",
+          fallbackSort: { type: "alphabetical" },
+        },
+      ],
+    },
+  },
+];
+```
+
+ESLint only reorders, Prettier does the wrapping, and the extension does both in one pass. Checked on hundreds of randomly shuffled import blocks (eslint-plugin-perfectionist 5.13, ESLint 9): the order matches the extension whenever no two imports have the same length.
+
 ## What's supported
 
 - `import { a, b } from "x";` - named
@@ -132,7 +177,7 @@ src/
   sorter.ts        - orchestrator: parse -> render -> sort by from-line length
   extension.ts     - VS Code glue: command, code action, save hook
 test/
-  sorter.test.ts   - 23 Vitest cases
+  sorter.test.ts   - Vitest cases
 ```
 
 The logic in `sorter.ts`/`parser.ts`/`renderer.ts` has no VS Code dependency and is tested directly.

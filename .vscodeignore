@@ -1,4 +1,7 @@
 .vscode/**
+.github/**
+.gitignore
+docs/**
 .vscode-test/**
 src/**
 test/**

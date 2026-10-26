@@ -100,6 +100,6 @@
     "@types/node": "^20.11.0",
     "@types/vscode": "^1.85.0",
     "typescript": "^5.3.3",
-    "vitest": "^1.2.0"
+    "vitest": "^5.0.5"
   }
 }
